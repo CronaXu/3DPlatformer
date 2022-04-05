@@ -1,0 +1,10 @@
+Mammatus Sunset A Skybox from AllSky
+https://assetstore.unity.com/packages/2d/textures-materials/sky/allsky-220-sky-skybox-set-10109
+
+StoneWalls Normal Maps
+https://assetstore.unity.com/packages/3d/stonewalls-normal-maps-64841
+
+Wood_planks_custom_color material from Wood Realistic Textures
+https://assetstore.unity.com/packages/2d/textures-materials/wood/wood-realistic-textures-84773
+
+All the other assets are created by me.
