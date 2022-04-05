@@ -4,20 +4,26 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // References to charactercontroller and camera position;
+    // References to charactercontroller and camera/player position;
     public CharacterController cc;
     public Transform camTrans;
 
     // Basic stats
-    public float speed = 15f;
-    public float jump = 50f;
-    public float turnSmoothTime = 0.15f;
+    public float speed = 12f;
+    public float jump = 60f;
+    private float turnSmoothTime = 0.15f;
     private float turnSmoothVelocity;
 
     // Simulate gravity
     private Vector3 velocity;
     private bool isGrounded;
-    private float gravity = -50f;
+    private float gravity = -60f;
+    private bool rayDown;
+
+    // Lerp stats
+    private float lerpDuration = 0.5f;
+    private float timeElapsed = 0f;
+    private float currentY;
 
     void Update()
     {
@@ -45,20 +51,64 @@ public class PlayerMovement : MonoBehaviour
         {
             velocity.y = Mathf.Sqrt(jump * -0.2f * gravity);
             isGrounded = false;
+            
         }
 
-        // Keep track of gravity
-        velocity.y += gravity * Time.deltaTime;
+        // Transport back if fall down
+        if (transform.position.y < 230f)
+        {
+            cc.enabled = false;
+            transform.position = new Vector3(0f, 369.321f, 0f);
+            cc.enabled = true;
+            velocity = Vector3.zero;
+            horizontal = 0f;
+            vertical = 0f;
+        }
+
+        // Keep track of gravity and check grounded
+        rayDown = Physics.Raycast(transform.position, Vector3.down, 1.1f);
+        if (!rayDown)
+        {
+            isGrounded = false;
+        }
+        if (!isGrounded)
+        {
+            velocity.y += gravity * Time.deltaTime;
+            currentY = velocity.y;
+        }
+
+        // Lerp current y velocity to 0 if Grounded so that player won't be laggy on leaning boards
+        if (isGrounded)
+        {
+            if (timeElapsed < lerpDuration)
+            {
+                velocity.y = Mathf.Lerp(currentY, 0f, timeElapsed / lerpDuration);
+                timeElapsed += Time.deltaTime;
+            }
+            else
+            {
+                velocity.y = 0;
+                timeElapsed = 0f;
+            }
+        }
+        
         cc.Move(velocity * Time.deltaTime);
+
+        
     }
 
     // Check if player is grounded
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        //Debug.Log(isGrounded);
+        
         if (hit.gameObject.tag == "Ground")
         {
-            isGrounded = true;
+            if (rayDown)
+            {
+                isGrounded = true;
+            }
         }
+
+        
     }
 }
