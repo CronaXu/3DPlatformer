@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     // References to charactercontroller and camera/player position;
     public CharacterController cc;
     public Transform camTrans;
+    public GameObject mainCam;
 
     // Basic stats
     public float speed = 12f;
@@ -24,6 +25,8 @@ public class PlayerMovement : MonoBehaviour
     private float lerpDuration = 0.5f;
     private float timeElapsed = 0f;
     private float currentY;
+
+    
 
     void Update()
     {
@@ -111,4 +114,25 @@ public class PlayerMovement : MonoBehaviour
 
         
     }
+
+    // Body turn red if collide with enemy
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Enemy")
+        {
+            transform.Find("Body").gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
+        }
+
+    }
+
+    // Turn white if exit collision
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Enemy")
+        {
+            transform.Find("Body").gameObject.GetComponent<MeshRenderer>().material.color = Color.white;
+        }
+    }
+
+    
 }
